@@ -429,6 +429,22 @@ ArrayOfMixedSlices = [[1, 2], ["a", "b"]]
 			}	{},
 			wantOutput: "# parent struct\n[Parent]\n  # child struct\n  [Parent.Child]\n    # child int\n    Int = 0\n",
 		},
+		"comment with a newline": {
+			input: struct {
+				Below string `desc:"This is a comment\nwith a newline"`
+			}{"foobar"},
+			wantOutput: "# This is a comment\n# with a newline\nBelow = \"foobar\"\n",
+		},
+		"comments in nested struct": {
+			input: struct {
+				Parent struct {
+					Child struct {
+						Int int  `desc:"with\nindents"`
+					} `desc:"new\nlines"`
+				} `desc:"should\nmaintain"`
+			}{},
+			wantOutput: "# should\n# maintain\n[Parent]\n  # new\n  # lines\n  [Parent.Child]\n    # with\n    # indents\n    Int = 0\n",
+		},
 	}
 	for label, test := range tests {
 		encodeExpected(t, label, test.input, test.wantOutput, test.wantError)

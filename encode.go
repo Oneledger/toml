@@ -377,8 +377,15 @@ func (enc *Encoder) eStruct(key Key, rv reflect.Value) {
 }
 
 func (enc *Encoder) addComment(key Key, tag reflect.StructTag) {
+	// Need to prefix any newlines ("\n") with a comment and indent
+	replaceNewLine := func(s string, indent string) string {
+		new := fmt.Sprintf("\n%s# ", indent)
+		return strings.ReplaceAll(s, "\n", new)
+	}
 	if s := tag.Get("desc"); s != "" {
-		enc.wf("%s# %s\n", enc.indentStr(key), s)
+		indent := enc.indentStr(key)
+
+		enc.wf("%s# %s\n", indent, replaceNewLine(s, indent))
 		enc.hasWritten = false
 	}
 }

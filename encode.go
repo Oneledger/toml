@@ -380,7 +380,7 @@ func (enc *Encoder) addComment(key Key, tag reflect.StructTag) {
 	// Need to prefix any newlines ("\n") with a comment and indent
 	replaceNewLine := func(s string, indent string) string {
 		new := fmt.Sprintf("\n%s# ", indent)
-		return strings.ReplaceAll(s, "\n", new)
+		return strings.Replace(s, "\n", new, -1)
 	}
 	if s := tag.Get("desc"); s != "" {
 		indent := enc.indentStr(key)
